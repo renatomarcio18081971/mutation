@@ -39,15 +39,6 @@ const perfis = [
 ]
 
 const typeDefs = gql`
-    scalar Date
-
-    type Produto {
-        nome: String!
-        preco: Float!
-        desconto: Float
-        precoComDesconto: Float
-    }
-
     type Usuario {
         id: Int
         nome: String!
@@ -55,7 +46,6 @@ const typeDefs = gql`
         idade: Int
         salario: Float
         vip: Boolean
-        nomeMaisIdade: String
         perfil: Perfil
         status: UsuarioStatus
     }
@@ -67,11 +57,7 @@ const typeDefs = gql`
 
     #ponto de entrada da consulta
     type Query {
-        ola: String!
-        horaCerta: Date!
         usuarioLogado: Usuario
-        produtoEmDestaque: Produto
-        numeroMegaSena: [Int]!
         usuarios: [Usuario]!
         usuario(id: Int): Usuario
         perfis: [Perfil]
@@ -90,27 +76,12 @@ const resolvers = {
         salario(usuario){
             return (usuario.salario_real * 2) /2
         },
-        nomeMaisIdade(usuario){
-            return usuario.nome + ' - ' + usuario.idade
-        },
         perfil(usuario){
             const selecao = perfis.filter(a => a.id === usuario.perfil_id)
             return selecao ? selecao[0] : null
         }
     },
-    Produto: {
-        precoComDesconto(produto){
-            return produto.preco - ((produto.preco * produto.desconto) / 100)
-        }
-    },
     Query: {
-        ola(){
-            return 'Bom dia !!!!'
-        },
-        horaCerta() {
-            var agora = new Date()
-            return `${new Date()}`
-        },
         usuarioLogado() {
             return {
                 id: 1,
@@ -120,16 +91,6 @@ const resolvers = {
                 salario_real: 6000,
                 vip: true
             }
-        },
-        produtoEmDestaque() {
-            return {
-                nome: "Guarana",
-                preco: 35.50,
-                desconto: 10
-            }
-        },
-        numeroMegaSena() {
-            return [10, 20, 30, 40, 50, 60]
         },
         usuarios() {
             return usuarios
